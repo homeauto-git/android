@@ -1,0 +1,30 @@
+name: Build Universal APK
+
+on:
+  workflow_dispatch:  # Allows triggering the build manually
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Run on Ubuntu (Linux environment)
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # Checkout the code from your forked repo
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Use Temurin JDK distribution
+          java-version: '11'  # Specify JDK 11
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2  # Set up Gradle to build the project
+
+      - name: Build APK
+        run: ./gradlew assembleRelease  # Build the release APK
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: universal-apk
+          path: app/build/outputs/apk/release/*.apk  # Path to the generated APK
